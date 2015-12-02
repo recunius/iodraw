@@ -1,13 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
-<form id="startPanel" class="form-group">
+<form id="startPanel" class="form-inline">
   <h3>
     Pick a name for your drawing room to get started
   </h3>
   <div class="form-group">
-    <input id="room" type="text" class="form-control" placeholder="Room" autofocus>
-  </div>
-  <button id="go" class="btn btn-primary" type="button">Go</button>
+    <label class="sr-only" for="room">Select A Room</label>
+    <div class="input-group">
+      <input id="room" type="text" class="form-control"
+	     placeholder="Room" style="width: 34em" autofocus>
+	<div class="input-group-btn">
+	  <button id="go" class="btn btn-primary" type="button">Go</button>
+	</div>
+      </div>
+    </div>
 </form>
 
 <div id="drawPanel" style="display: none; width: 850px" class="container">

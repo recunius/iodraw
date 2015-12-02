@@ -34,6 +34,7 @@ $(document).ready(function() {
     if (e.which === 13) {
       console.debug("#room enter key pressed");
       sendJoinRequest();
+      e.preventDefault();
     }
   });
 
