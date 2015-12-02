@@ -11,7 +11,6 @@ from socketIO_client import SocketIO, LoggingNamespace, BaseNamespace
 
 logger = logging.getLogger(__name__)
 
-
 # TODO: Use custom namespace. Waiting on bug socketIO-client bug:
 # https://github.com/invisibleroads/socketIO-client/issues/96
 class Test_Join(unittest.TestCase):

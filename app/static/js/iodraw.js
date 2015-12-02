@@ -3,10 +3,12 @@ $(document).ready(function() {
   
   var appEvents = new EventEmitter();
 
-  var namespace = '/draw';
-  var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
+  var socket = io.connect('http://' + document.domain + ':' + location.port);
 
-  socket.on('joinResponse', function(data) {
+  var syncManager = new SyncManager(socket, appEvents);
+  syncManager.init();
+
+  socket.on('initRoom', function(data) {
     $('#startPanel').hide();
     $('#drawPanel').show();
     console.log('data = ', data);
@@ -36,8 +38,8 @@ $(document).ready(function() {
     canvas.setAttribute('id', 'drawing');
     canvas.setAttribute("class", "drawing");
 
+    this.context = canvas.getContext("2d");
     var that = this;
-    var context = canvas.getContext("2d");
     $(canvas).mousedown(function(e) {
       console.log("in mousedown");
       that.lastX = e.pageX - this.offsetLeft;
@@ -49,14 +51,18 @@ $(document).ready(function() {
       console.log("in mousemove", that.mouseDown);
       if(that.mouseDown) {
 	var x = e.pageX - this.offsetLeft;
-	var y = e.pageY - this.offsetTop; 
-	context.beginPath();
-	context.moveTo(that.lastX || x, that.lastY || y);
-	context.lineTo(x, y);
-	context.stroke();
+	var y = e.pageY - this.offsetTop;
+	var from = { x: that.lastX || x, y: that.lastY || y};
+	var to = { x: x, y: y};
+	that.draw(from, to);
+	appEvents.emit('uiDraw', { from: from, to: to });
 	that.lastX = x;
 	that.lastY = y;
       }
+    });
+
+    appEvents.on('draw', function(data) {
+      that.draw(data.from, data.to);
     });
     
     $(canvas).mouseup(function(e) {
@@ -64,6 +70,13 @@ $(document).ready(function() {
       that.lastX = that.lastY = undefined;
     });
     this.canvas = canvas;
+  };
+
+  Drawing.prototype.draw = function(from, to) {
+    this.context.beginPath();
+    this.context.moveTo(from.x, from.y);
+    this.context.lineTo(to.x, to.y);
+    this.context.stroke();
   };
 
   Drawing.prototype.getCanvas = function() {
