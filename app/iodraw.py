@@ -27,13 +27,19 @@ def handle_draw(data):
     emit('receiveDraw', data, room=user_room)
 
 @socketio.on('joinRequest')
-def handle_join_request(msg):
-    logger.info('Received {}'.format(msg))
+def handle_join_request(data):
+    logger.info('Received {}'.format(data))
     # TODO: validate data
-    join_room(msg['room'])
+    join_room(data['room'])
 
     # TODO: pass back current drawing (likely async, so emit instead of return)
-    emit('initRoom', { 'room' : msg['room'], 'pic' : { } })
+    emit('initRoom', { 'room' : data['room'], 'pic' : { } })
+
+@socketio.on('leaveRequest')
+def handle_leave_request(data):
+    logger.info('Received {}'.format(data))
+    leave_room(data['room'])
+    emit('leaveRoom')
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, host='0.0.0.0')

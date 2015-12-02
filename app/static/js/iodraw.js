@@ -13,12 +13,37 @@ $(document).ready(function() {
     $('#drawPanel').show();
     console.log('data = ', data);
     $('#drawingRoom').text(data['room']);
-    appEvents.emit('state#join');
+    appEvents.emit('joinRoom');
   });
+  
+//  socket.on('leaveRoom', function() {
+//    appEvents.emit('leaveRoom');
+//  });
+
+
+  var sendJoinRequest = function() {
+    socket.emit('joinRequest', { room: $('#room').val() });
+  };
 
   $('#go').click(function() {
-    console.log("form#go clicked");
-    socket.emit('joinRequest', { room: $('#room').val() });
+    console.debug("#go clicked");
+    sendJoinRequest();
+  });
+
+  $('#room').keypress(function(e) {
+    if (e.which === 13) {
+      console.debug("#room enter key pressed");
+      sendJoinRequest();
+    }
+  });
+
+  $('#leave').click(function() {
+    var room = $('#room').val();
+    console.debug("#leave clicked, leaving room", room);
+    socket.emit('leaveRequest', { room: room }, function() {
+      console.debug("leaveRequest response")
+      appEvents.emit('leaveRoom');
+    });
   });
   console.debug("END loading socketio.js");
 
@@ -83,11 +108,21 @@ $(document).ready(function() {
     return this.canvas;
   };
 
-  appEvents.addListener('state#join', function() {
+  appEvents.addListener('joinRoom', function() {
     var wrapper = document.getElementById('drawing-wrapper');
     var drawing = new Drawing();
     drawing.init();
     wrapper.appendChild(drawing.getCanvas());
   });
+
+  appEvents.on('leaveRoom', function() {
+    console.debug("appEvents.leaveRoom")
+    var roomEl = $('#room');
+    roomEl.val('');
+    $('#drawPanel').hide();
+    $('#startPanel').show();
+    roomEl.focus();
+  });
+
   
 });

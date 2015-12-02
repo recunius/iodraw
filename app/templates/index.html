@@ -5,14 +5,21 @@
     Pick a name for your drawing room to get started
   </h3>
   <div class="form-group">
-    <input id="room" type="text" class="form-control"
-	   placeholder="Room">
+    <input id="room" type="text" class="form-control" placeholder="Room" autofocus>
   </div>
   <button id="go" class="btn btn-primary" type="button">Go</button>
 </form>
 
-<div id="drawPanel" style="display: none;">
-  <h3>You've joined <span id="drawingRoom"></span></h3>
+<div id="drawPanel" style="display: none; width: 850px" class="container">
+  <div class="row">
+    <div class="col-md-10 h3">
+      You've joined <span id="drawingRoom"></span>
+    </div>
+    <div class="col-md-2">
+      <button id="leave" class="btn btn-default" style="margin-top: 14px"
+	      type="button">Leave</button>
+    </div>
+  </div>
   <div id="drawing-wrapper">
   </div>
 </div>
