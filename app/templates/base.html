@@ -5,8 +5,10 @@
 {% block scripts %}
 {{super()}}
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/EventEmitter/4.3.0/EventEmitter.min.js"></script>
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+<script type="text/javascript"
+	src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
 <script src="{{url_for('static', filename='js/syncmanager.js')}}"></script>
+<script src="{{url_for('static', filename='js/drawing.js')}}"></script>
 <script src="{{url_for('static', filename='js/iodraw.js')}}"></script>
 {% endblock %}
 
