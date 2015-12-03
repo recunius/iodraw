@@ -1,7 +1,7 @@
 import logging
 from flask import Flask
 from flask_bootstrap import Bootstrap
-from flask import render_template
+from flask import render_template, request
 from flask_socketio import SocketIO, emit, join_room, leave_room, \
     close_room, rooms, disconnect
 from drawings import Drawings
@@ -27,7 +27,7 @@ def index():
 def handle_draw(line):
     """Append line to drawing in cache and emit line to all users in room"""
     # TODO: validate line
-    user_room = rooms()[0]
+    user_room = [ r for r in rooms() if r != request.sid ][0]
     drawings.get_drawing(user_room).append(line)
     emit('receiveDraw', line, room=user_room)
 
