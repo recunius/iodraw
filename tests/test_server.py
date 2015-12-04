@@ -16,21 +16,21 @@ class IODrawTestCase(unittest.TestCase):
 
 # TODO: Use custom namespace. Waiting on bug socketIO-client bug:
 # https://github.com/invisibleroads/socketIO-client/issues/96
-class Test_Join(IODrawTestCase):
+class TestJoin(IODrawTestCase):
     ROOM = "test_join"
     
     def on_init_room(self, arg):
         logger.info("initRoom: Received {} ({})".format(arg, type(arg)))
         self.assertIsInstance(arg, dict, msg='Expected a dict')
         self.assertEqual(arg['pic'], [], msg='Expected key pic = []')
-        self.assertEqual(arg['room'], Test_Join.ROOM, msg='Expected key room = {}'.format(Test_Join.ROOM))
+        self.assertEqual(arg['room'], TestJoin.ROOM, msg='Expected key room = {}'.format(TestJoin.ROOM))
 
     def test_request_join(self):
         self.socketIO.on('initRoom', self.on_init_room)
-        self.socketIO.emit('joinRequest', { "room" : Test_Join.ROOM })
+        self.socketIO.emit('joinRequest', { "room" : TestJoin.ROOM })
         self.socketIO.wait(seconds=1)
 
-class Test_Draw(IODrawTestCase):
+class TestDraw(IODrawTestCase):
     # use uuid to avoid conflicts on retesting
     ROOM = "test_draw" + str(uuid.uuid4())
 
@@ -45,8 +45,8 @@ class Test_Draw(IODrawTestCase):
         self.assertListEqual(line['to'], [300, 200])
 
     def test_draw(self):
-        self.socketIO.emit('joinRequest', { "room" : Test_Draw.ROOM })
-        self.socket2.emit('joinRequest', { "room" : Test_Draw.ROOM })
+        self.socketIO.emit('joinRequest', { "room" : TestDraw.ROOM })
+        self.socket2.emit('joinRequest', { "room" : TestDraw.ROOM })
         self.socketIO.wait(seconds=1)
         self.socket2.wait(seconds=1)
         self.socket2.on('receiveDraw', self.on_receive_draw)
@@ -54,7 +54,7 @@ class Test_Draw(IODrawTestCase):
         self.socketIO.wait(seconds=1)
         self.socket2.wait(seconds=1)
 
-class Test_Join_Existing_Room(IODrawTestCase):
+class TestJoinExistingRoom(IODrawTestCase):
     # use uuid to avoid conflicts on retesting
     ROOM = "test_join_existing-" + str(uuid.uuid4())
 
@@ -70,13 +70,13 @@ class Test_Join_Existing_Room(IODrawTestCase):
         self.assertListEqual(data['pic'][0]['to'], [300, 200])
 
     def test_draw(self):
-        self.socketIO.emit('joinRequest', { "room" : Test_Join_Existing_Room.ROOM })
+        self.socketIO.emit('joinRequest', { "room" : TestJoinExistingRoom.ROOM })
         self.socketIO.wait(seconds=1)
         self.socketIO.emit('draw', {'from': [0, 0], 'to': [ 300, 200 ] })
         self.socketIO.wait(seconds=1)
         self.socket2.wait(seconds=1)
         self.socket2.on('initRoom', self.on_init_room)
-        self.socket2.emit('joinRequest', { "room" : Test_Join_Existing_Room.ROOM })
+        self.socket2.emit('joinRequest', { "room" : TestJoinExistingRoom.ROOM })
         self.socket2.wait(seconds=1)
 
 if __name__ == '__main__':
