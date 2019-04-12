@@ -1,6 +1,6 @@
 dominate==2.1.16
 eventlet==0.17.4
-Flask==0.10.1
+Flask==0.12.3
 Flask-Bootstrap==3.3.5.7
 Flask-SocketIO==1.1
 greenlet==0.4.9
